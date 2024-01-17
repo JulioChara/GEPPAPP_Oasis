@@ -1,0 +1,41 @@
+pwd:oasis2021
+
+alias:keyoasis
+
+
+---------NEW------------
+alias: keyoasis2022
+paswword oasis2022
+------------------------
+
+keytool -keypasswd -alias %MyKeyAlias% -new %newpassword% -keystore KeyStore.jks
+
+
+keytool -storepass -new oasis2021 -keystore D:\JULIO CHARA\SISTEMAS\ANDROID\oasis_app\flutter_oasis\keyoasis.jks
+
+keytool -storepasswd -keystore D:\JULIO CHARA\SISTEMAS\ANDROID\oasis_app\flutter_oasis\keyoasis.jks -storepass oasis2021 -new oasis2022
+
+
+keytool -keypasswd keyoasis -new oasis2022 -keystore -alias D:\JULIO CHARA\SISTEMAS\ANDROID\oasis_app\flutter_oasis\keyoasis.jks
+
+----
+
+keytool -storepasswd -keystore D:\JULIO CHARA\SISTEMAS\ANDROID\oasis_app\flutter_oasis\keyoasis.jks
+
+
+keytool -storepasswd -new oasis2022 -keystore D:\JULIO CHARA\SISTEMAS\ANDROID\oasis_app\flutter_oasis\keyoasis.jks
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
