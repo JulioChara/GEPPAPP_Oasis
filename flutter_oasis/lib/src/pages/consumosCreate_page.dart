@@ -22,6 +22,9 @@ class _ConsumoCreatePageState extends State<ConsumoCreatePage> {
   bool loading = true;
   bool loadingSend = false;
 
+  static List<vinculacionModel> vinculacion = [];
+  GlobalKey<AutoCompleteTextFieldState<vinculacionModel>> keyVinculacion = new GlobalKey();
+
   static List<Responsable> responsables = [];
   GlobalKey<AutoCompleteTextFieldState<Responsable>> keyResponsable =  new GlobalKey();
 
@@ -31,13 +34,15 @@ class _ConsumoCreatePageState extends State<ConsumoCreatePage> {
   AutoCompleteTextField? searchResponsable;
 
   AutoCompleteTextField? searchTipoProducto;
-
+  AutoCompleteTextField? searchVinculacion;
   TextEditingController DestinoEditingController = new TextEditingController();
   TextEditingController TicketEditingController = new TextEditingController();
   TextEditingController CantidadEditingController = new TextEditingController();
   TextEditingController MontoEditingController = new TextEditingController();
+  final TextEditingController _DocumentoController = TextEditingController();  // para el autocompelte dde fielddocumento
 
   var objDetailServices = new DetailServices();
+  var _consumosServices = new ConsumoService();
 
   final List<String> entries = <String>['A', 'B', 'C'];
   final List<int> colorCodes = <int>[600, 500, 100];
@@ -50,9 +55,10 @@ class _ConsumoCreatePageState extends State<ConsumoCreatePage> {
   void getData() async {
     try {
 
-
+      vinculacion = await _consumosServices.Consumos_ObtenerDocumentosSinVincular();
       tipoProducto = await objDetailServices.cargarTipoProducto();
       _tipoProductoDropdownMenuItems = buildDropDownMenuTipos(tipoProducto);
+
 
       responsables = await objDetailServices.cargarResponsable();
 
@@ -181,30 +187,33 @@ class _ConsumoCreatePageState extends State<ConsumoCreatePage> {
                       SizedBox(
                         height: 20.0,
                       ),
-                      TextFormField(
-                        controller: TicketEditingController  ,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          hintText: "Ticket",
-                          labelText: "Ticket",
-                          prefixIcon: Container(
-                            width: 20,
-                            height: 40,
-                            padding: EdgeInsets.all(10),
-                            child: SvgPicture.asset(
-                                "assets/icons/tick.svg"),
-                          ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                        ),
-                        //keyboardType: TextInputType.emailAddress,
-                        keyboardAppearance: Brightness.light,
-                        textInputAction: TextInputAction.next,
-                        onFieldSubmitted: (String text) {},
-                        onChanged: (value) {
-                          consumoModel.ticket = value.toString();
-                        },
-                      ),
+                      // TextFormField(
+                      //   controller: TicketEditingController  ,
+                      //   keyboardType: TextInputType.emailAddress,
+                      //   decoration: InputDecoration(
+                      //     hintText: "Ticket",
+                      //     labelText: "Ticket",
+                      //     prefixIcon: Container(
+                      //       width: 20,
+                      //       height: 40,
+                      //       padding: EdgeInsets.all(10),
+                      //       child: SvgPicture.asset(
+                      //           "assets/icons/tick.svg"),
+                      //     ),
+                      //     border: OutlineInputBorder(
+                      //         borderRadius: BorderRadius.circular(10)),
+                      //   ),
+                      //   //keyboardType: TextInputType.emailAddress,
+                      //   keyboardAppearance: Brightness.light,
+                      //   textInputAction: TextInputAction.next,
+                      //   onFieldSubmitted: (String text) {},
+                      //   onChanged: (value) {
+                      //     consumoModel.ticket = value.toString();
+                      //   },
+                      // ),
+
+                      searchVinculacion = fieldDocumento(),
+
                       SizedBox(
                         height: 20.0,
                       ),
@@ -263,6 +272,7 @@ class _ConsumoCreatePageState extends State<ConsumoCreatePage> {
                         height: 20.0,
                       ),
 
+
                       Divider(
                         height: 20.0,
                       ),
@@ -313,45 +323,6 @@ class _ConsumoCreatePageState extends State<ConsumoCreatePage> {
                             setState(() {});
                           });
 
-//                           showDialog(
-//                               context: context,
-//                               barrierDismissible: true,
-//                               builder: (context) {
-//                                 return AlertDialog(
-//                                   shape: RoundedRectangleBorder(
-//                                       borderRadius:
-//                                       BorderRadius.circular(20.0)),
-//                                   title: Text("Atención"),
-//                                   content: Column(
-//                                     mainAxisSize: MainAxisSize.min,
-//                                     children: <Widget>[
-//                                       Text(
-//                                           "Esta seguro de grabar el Informe"),
-//                                       SizedBox(
-//                                         height: 10.0,
-//                                       ),
-// //                                      Icon(Icons.warning, size: 45.0, color: Colors.yellow,)
-//                                     ],
-//                                   ),
-//                                   actions: <Widget>[
-//                                     FlatButton(
-//                                       onPressed: () {
-//                                         Navigator.pop(context);
-//                                       },
-//                                       child: Text("Cancelar"),
-//                                     ),
-//                                     FlatButton(
-//                                       onPressed: () {
-//                                         _sendData();
-//                                         setState(() {
-//                                         });
-//                                         Navigator.pop(context);
-//                                       },
-//                                       child: Text("Enviar"),
-//                                     )
-//                                   ],
-//                                 );
-//                               });
                         },
                       ),
                       SizedBox(
@@ -421,6 +392,7 @@ class _ConsumoCreatePageState extends State<ConsumoCreatePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String id = await prefs.getString("idUser")!;
     print(id);
+    consumoModel.ticket = _DocumentoController.text;
     consumoModel.usrCreacion = id;
     setState(() {
       loadingSend = true;
@@ -447,65 +419,6 @@ class _ConsumoCreatePageState extends State<ConsumoCreatePage> {
     }
   }
 
-    //
-    // if (res == "1") {
-    //
-    //   showDialog(
-    //       context: context,
-    //       builder: (BuildContext context){
-    //         return AlertDialog(
-    //           shape: RoundedRectangleBorder(
-    //               borderRadius:
-    //               BorderRadius.circular(20.0)),
-    //           title: Text("Atención"),
-    //           content: Text("Consumo Combustible Grabado Correctamente"),
-    //           actions: <Widget>[
-    //             FlatButton(
-    //               onPressed: () {
-    //                 Navigator.pop(context);
-    //                 Navigator.pop(context);
-    //                 Navigator.pushReplacementNamed(context, 'consumos');
-    //               },
-    //               child: Text("Aceptar"),
-    //             )
-    //           ],
-    //         );
-    //       }
-    //   );
-    //
-    //   setState(() {
-    //     loadingSend = false;
-    //   });
-    //
-    // }else{
-    //
-    //   showDialog(
-    //       context: context,
-    //       builder: (BuildContext context){
-    //         return AlertDialog(
-    //           shape: RoundedRectangleBorder(
-    //               borderRadius:
-    //               BorderRadius.circular(20.0)),
-    //           title: Text("Atención"),
-    //           content: Text("Hubo un problema, Verifique que todos los datos esten llenos o que el turno este abierto."),
-    //           actions: <Widget>[
-    //             FlatButton(
-    //               onPressed: () {
-    //                 Navigator.pop(context);
-    //               },
-    //               child: Text("Aceptar"),
-    //             )
-    //           ],
-    //         );
-    //       }
-    //   );
-    //   setState(() {
-    //     loadingSend = false;
-    //   });
-    // }
-
-
-  //}
 
 
   AutoCompleteTextField<Responsable> fieldResponsable() {
@@ -657,6 +570,100 @@ class _ConsumoCreatePageState extends State<ConsumoCreatePage> {
       ),
     );
   }
+
+
+
+
+
+
+  AutoCompleteTextField<vinculacionModel> fieldDocumento() {
+
+    return AutoCompleteTextField<vinculacionModel>(
+      controller: _DocumentoController,
+      key: keyVinculacion,
+      clearOnSubmit: false,
+      suggestions: vinculacion,
+      style: TextStyle(color: Colors.black54, fontSize: 16.0),
+
+      decoration: InputDecoration(
+        labelText: "Documento a Vincular",
+        hintStyle: TextStyle(color: Colors.black54),
+
+        prefixIcon: Container(
+          padding: EdgeInsets.all(10),
+          width: 17.0,
+          height: 17.0,
+          child: SvgPicture.asset(
+            "assets/icons/tick.svg",
+            color: Colors.black87.withOpacity(0.6),
+          ),
+        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+      itemFilter: (item, query) {
+        return item.descripcion!.toLowerCase().contains(query.toLowerCase());
+      },
+      itemSorter: (a, b) {
+        return a.descripcion!.compareTo(b.descripcion!);
+      },
+      itemSubmitted: (item) {
+        setState(() {
+          searchVinculacion!.textField!.controller!.text = item.documento!;
+          consumoModel.idCompraFk = item.Id;
+          print(consumoModel.idCompraFk);
+          // consumoModel.proveedor = item.proveedor;
+          // consumoModel.documento = item.documento;
+          consumoModel.ticket = item.documento;
+          consumoModel.cantidad = item.cantidad;
+          consumoModel.monto = item.total;
+          CantidadEditingController.text = item.cantidad!;
+          MontoEditingController.text = item.total!;
+
+        });
+      },
+      itemBuilder: (context, item) {
+        // ui for the autocompelete row
+        return rowVinculacion(item);
+      },
+    );
+  }
+
+  Widget rowVinculacion(vinculacionModel vinculacion) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Flexible(
+            child: Text(
+              vinculacion.documento!,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 16.0,
+                color: Colors.black54,
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 10.0,
+          ),
+          Flexible(
+            child: Text(
+              vinculacion.proveedor!,
+              style: TextStyle(
+                fontSize: 16.0,
+                color: Colors.black54,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+
 
 
 

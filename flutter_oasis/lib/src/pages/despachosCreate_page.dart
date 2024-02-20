@@ -29,6 +29,8 @@ class _DespachoCreatePageState extends State<DespachoCreatePage> {
 
   static List<Cliente> clientes = [];
   GlobalKey<AutoCompleteTextFieldState<Cliente>> keyCliente = new GlobalKey();
+  static List<Cliente> clientesFinal = [];
+  GlobalKey<AutoCompleteTextFieldState<Cliente>> keyclientesFinal = new GlobalKey();
 
   static List<Placa> placas = [];
   GlobalKey<AutoCompleteTextFieldState<Placa>> keyPlaca = new GlobalKey();
@@ -47,6 +49,7 @@ class _DespachoCreatePageState extends State<DespachoCreatePage> {
   AutoCompleteTextField? searchPlaca;
   AutoCompleteTextField? searchTipoSituacion;
   AutoCompleteTextField? searchEntidad;   //new
+  AutoCompleteTextField? searchClienteFinal;   //new
 
   TextEditingController ContometroInicialEditingController = new TextEditingController();
   TextEditingController ContometroFinalEditingController = new TextEditingController();
@@ -58,6 +61,7 @@ class _DespachoCreatePageState extends State<DespachoCreatePage> {
 
 
   TextEditingController _rucController = new TextEditingController();
+  TextEditingController _clientesFinalController = new TextEditingController();
 
   var objDetailServices = new DetailServices();
   var _despachoServices = new DespachoService();
@@ -70,6 +74,7 @@ class _DespachoCreatePageState extends State<DespachoCreatePage> {
   TipoTipo? _selectedSituacion;
 
   String idEntidad = "";
+  String idClienteFinal = "";
   String docConsOnline = "";
   String razConsOnline = "";
 
@@ -90,6 +95,7 @@ class _DespachoCreatePageState extends State<DespachoCreatePage> {
 
 
       clientes = await objDetailServices.cargarCliente();
+      clientesFinal = clientes;
       conductores = await objDetailServices.cargarConductor();
 
       setState(() {
@@ -151,6 +157,18 @@ class _DespachoCreatePageState extends State<DespachoCreatePage> {
         appBar: AppBar(
           title: Text("Despachos Agua"),
           backgroundColor: Colors.lightBlueAccent,
+        ),
+            floatingActionButton: FloatingActionButton(
+            backgroundColor: const Color.fromRGBO(82, 170, 94, 1.0),
+            tooltip: 'Increment',
+            onPressed: (){
+              print("Que riko aprietas kata");
+              print(idEntidad);
+              print(idClienteFinal);
+
+
+            },
+          child: const Icon(Icons.add, color: Colors.white, size: 28),
         ),
         body: loading
             ? Center(child: CircularProgressIndicator())
@@ -246,6 +264,14 @@ class _DespachoCreatePageState extends State<DespachoCreatePage> {
                       Column(
                         children: [
                           searchEntidad = fieldEntidad(),
+                        ] ,
+                      ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      Column(
+                        children: [
+                          searchClienteFinal = fieldClientesFinal(),
                         ] ,
                       ),
                       SizedBox(
@@ -656,6 +682,11 @@ class _DespachoCreatePageState extends State<DespachoCreatePage> {
       despachoModel.razOnline = "";
       docConsOnline = "";
       razConsOnline = "";
+    }
+    if(idClienteFinal == "0"){
+      despachoModel.clienteFinal = "0";
+    }else{
+
     }
 
 
@@ -1215,6 +1246,100 @@ class _DespachoCreatePageState extends State<DespachoCreatePage> {
     );
   }
 
+
+
+  AutoCompleteTextField<Cliente> fieldClientesFinal() {
+    return AutoCompleteTextField<Cliente>(
+      controller: _clientesFinalController,
+      key: keyclientesFinal,
+      clearOnSubmit: false,
+      suggestions: clientesFinal,
+      style: TextStyle(color: Colors.black54, fontSize: 16.0),
+      decoration: InputDecoration(
+        hintText: "Cliente Final",
+        labelText: "Cliente Final",
+        hintStyle: TextStyle(color: Colors.black54),
+        prefixIcon: Container(
+          padding: EdgeInsets.all(10),
+          width: 17.0,
+          height: 17.0,
+          child: SvgPicture.asset(
+            "assets/icons/frame.svg",
+            color: Colors.black87.withOpacity(0.6),
+          ),
+        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+     //   suffixIcon:
+        // CircleAvatar(
+        //   radius: 25,
+        //   backgroundColor: Color(0xFF000000),
+        //   child: IconButton(
+        //     icon: Icon(
+        //       Icons.search,
+        //       color: Colors.white,
+        //     ),
+        //     onPressed: () {
+        //       if (_clientesFinalController.text.length ==8){
+        //         consultaReniec(_clientesFinalController.text);
+        //       }else {
+        //         consultaSunat(_clientesFinalController.text);
+        //       }
+        //
+        //     },
+        //   ),
+        // ),
+      ),
+      itemFilter: (item, query) {
+        return item.razonSocial!.toLowerCase().contains(query.toLowerCase());
+        //return item.entiNroDocumento.toLowerCase().contains(query.toLowerCase());
+      },
+      itemSorter: (a, b) {
+        //return a.entiRazonSocial.compareTo(b.entiRazonSocial);
+        return a.razonSocial!.compareTo(b.razonSocial.toString());
+      },
+      itemSubmitted: (item) {
+        setState(() {
+          // searchEntidad.textField.controller.text = item.entiNroDocumento;
+          //_razonController.text = item.entiRazonSocial; old
+          _clientesFinalController.text = item.razonSocial.toString();
+          idClienteFinal = item.id.toString();
+          despachoModel.clienteFinal = item.id;
+          //  idEntidad = "";  //para contrarestar new
+          docConsOnline = "";
+          razConsOnline = "";
+          //pene
+          print("EXITO");
+        });
+      },
+      itemBuilder: (context, item) {
+        // ui for the autocompelete row
+        return rowClienteFinal(item);
+      },
+    );
+
+  }
+
+  Widget rowClienteFinal(Cliente empleado) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Expanded(
+            child: Text(
+              empleado.razonSocial.toString(),
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                // fontSize: 16.0,
+                fontSize: 14.0,
+                color: Colors.black54,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
 //END BUSCADOR
 

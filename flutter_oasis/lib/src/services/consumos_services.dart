@@ -103,4 +103,32 @@ class ConsumoService {
   }
 
 
+  // consumo.sucursal = _prefs.sucursal;
+  Future<List<vinculacionModel>> Consumos_ObtenerDocumentosSinVincular() async {
+    try {
+      // var resp = await http.get(kUrl + "/ObtenerDocumentosSinVincular");
+      String url = kUrl + "/Consumos_ObtenerDocumentosSinVincular";
+      http.Response resp = await http.post(Uri.parse(url),
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: jsonEncode({'sucursal': _prefs.sucursal}));
+      var decodeData = json.decode(resp.body);
+
+      final List<vinculacionModel> vinculacion = [];
+
+      decodeData["Documentos"].forEach((item) {
+        final documentoTemp = vinculacionModel.fromJson(item);
+        vinculacion.add(documentoTemp);
+      });
+
+      return vinculacion;
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
+
 }

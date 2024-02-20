@@ -46,7 +46,7 @@ class _turnoCrearPageState extends State<turnoCrearPage> {
 
       puntoDespachos = await turnoServices_.cargarPuntosDespacho();
       _puntoDespachosDropdownMenuItems = buildDropDownMenuTipos(puntoDespachos);
-
+      GalonajeAperturaController.text = "0";
       setState(() {
         loading = false;
       });

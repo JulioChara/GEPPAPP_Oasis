@@ -80,6 +80,7 @@ class ConsumoModel {
   String? mensaje;
   String? resultado;
   String? sucursal;
+  String? idCompraFk;
 
   ConsumoModel({
     this.id,
@@ -95,6 +96,7 @@ class ConsumoModel {
     this.mensaje,
     this.resultado,
     this.sucursal,
+    this.idCompraFk,
   });
 
   factory ConsumoModel.fromJson(Map<String, dynamic> json) => ConsumoModel(
@@ -111,6 +113,7 @@ class ConsumoModel {
     mensaje: json["mensaje"] ?? "",
     resultado: json["resultado"] ?? "",
     sucursal: json["sucursal"] ?? "",
+    idCompraFk: json["idCompraFk"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {
@@ -127,5 +130,51 @@ class ConsumoModel {
     "mensaje": mensaje,
     "resultado": resultado,
     "sucursal": sucursal,
+    "idCompraFk": idCompraFk,
+  };
+}
+
+
+
+
+
+class vinculacionModel {
+  String? Id;
+  String? fecha;
+  String? documento;
+  String? cantidad;
+  String? proveedor;
+  String? total;
+  String? descripcion;
+
+
+  vinculacionModel({
+    this.Id,
+    this.fecha,
+    this.documento,
+    this.cantidad,
+    this.proveedor,
+    this.total,
+    this.descripcion,
+  });
+
+  factory vinculacionModel.fromJson(Map<String, dynamic> json) => vinculacionModel(
+    Id: json["Id"] ?? "",
+    fecha: json["fecha"] ?? "",
+    documento: json["documento"] ?? "",
+    cantidad: json["cantidad"] ?? "",
+    proveedor: json["proveedor"] ?? "",
+    total: json["total"] ?? "",
+    descripcion: json["descripcion"] ?? "",
+  );
+
+  Map<String, dynamic> toJson() => {
+    "Id": Id,
+    "fecha": fecha,
+    "documento": documento,
+    "cantidad": cantidad,
+    "proveedor": proveedor,
+    "total": total,
+    "descripcion": descripcion,
   };
 }

@@ -88,6 +88,7 @@ class DespachoModel {
   String? contInicial;
   String? contFinal;
   String? destino;
+  String? clienteFinal;
   String? conductor;
   String? placa;
   String? cantidad;
@@ -112,6 +113,7 @@ class DespachoModel {
     this.contInicial,
     this.contFinal,
     this.destino,
+    this.clienteFinal,
     this.conductor,
     this.placa,
     this.cantidad,
@@ -136,6 +138,7 @@ class DespachoModel {
     contInicial: json["contInicial"] ?? "",
     contFinal: json["contFinal"] ?? "",
     destino: json["destino"] ?? "",
+    clienteFinal: json["clienteFinal"] ?? "",
     conductor: json["conductor"] ?? "",
     placa: json["placa"] ?? "",
     cantidad: json["cantidad"] ?? "",
@@ -160,6 +163,7 @@ class DespachoModel {
     "contInicial": contInicial,
     "contFinal": contFinal,
     "destino": destino,
+    "clienteFinal": clienteFinal,
     "conductor": conductor,
     "placa": placa,
     "cantidad": cantidad,
