@@ -158,18 +158,22 @@ class _DespachoCreatePageState extends State<DespachoCreatePage> {
           title: Text("Despachos Agua"),
           backgroundColor: Colors.lightBlueAccent,
         ),
-            floatingActionButton: FloatingActionButton(
-            backgroundColor: const Color.fromRGBO(82, 170, 94, 1.0),
-            tooltip: 'Increment',
-            onPressed: (){
-              print("Que riko aprietas kata");
-              print(idEntidad);
-              print(idClienteFinal);
-
-
-            },
-          child: const Icon(Icons.add, color: Colors.white, size: 28),
-        ),
+        //     floatingActionButton: FloatingActionButton(
+        //     backgroundColor: const Color.fromRGBO(82, 170, 94, 1.0),
+        //     tooltip: 'Increment',
+        //     onPressed: (){
+        //       print("Que r");
+        //       print(idEntidad);
+        //       print(idClienteFinal);
+        //       ///
+        //       print(idEntidad);
+        //       print(docConsOnline);
+        //       print(razConsOnline);
+        //
+        //
+        //     },
+        //   child: const Icon(Icons.add, color: Colors.white, size: 28),
+        // ),
         body: loading
             ? Center(child: CircularProgressIndicator())
             : Stack(
@@ -1305,8 +1309,8 @@ class _DespachoCreatePageState extends State<DespachoCreatePage> {
           idClienteFinal = item.id.toString();
           despachoModel.clienteFinal = item.id;
           //  idEntidad = "";  //para contrarestar new
-          docConsOnline = "";
-          razConsOnline = "";
+          // docConsOnline = "";
+          // razConsOnline = "";
           //pene
           print("EXITO");
         });
